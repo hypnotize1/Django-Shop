@@ -1,0 +1,15 @@
+# Ignore venv and Python cache
+venv/
+__pycache__/
+*.py[cod]
+
+# Ignore DB and logs
+*.sqlite3
+*.log
+
+# Ignore Django static/media
+media/
+staticfiles/
+
+# Ignore env vars
+.env
