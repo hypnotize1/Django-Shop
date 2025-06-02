@@ -6,7 +6,6 @@ def unique_slug_generator(instance, slug_field_name, value_to_slugify):
     modelclass = instance.__class__
     unique_slug = slug
     num = 1
-
     while modelclass.objects.filter(**{slug_field_name: unique_slug}).exists():
         unique_slug = f"{slug}-{num}"
         num += 1

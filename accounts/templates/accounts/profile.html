@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Your Profile</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+                <div class="text-danger small">
+                  {% for error in field.errors %}
+                    <div>{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          {% if user.picture %}
+            <div class="mb-3">
+              <p class="form-label">Current Picture:</p>
+              <img src="{{ user.picture.url }}" width="100" class="rounded border">
+            </div>
+          {% endif %}
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-dark">Update Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
