@@ -1,11 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
+from django.contrib.auth.views import (PasswordResetView,
+                                       PasswordResetDoneView,
+                                       PasswordResetConfirmView,
+                                       PasswordResetCompleteView
+                                       )
 
-from accounts.forms import RegistrationForm, ProfileForm, UserAuthenticationForm
+
+from accounts.forms import RegistrationForm, ProfileForm, UserAuthenticationForm, UserPasswordChangeForm
 from accounts.models import Account
 
 
@@ -58,3 +64,31 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('accounts:login')
+
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
+
+
+class UserPasswordChangeView(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    success_url = reverse_lazy('accounts:password_change_done')
+    form_class = UserPasswordChangeForm
+
+
+class UserPasswordChangeDoneView(PasswordChangeView):
+    template_name = 'accounts/password_change_done.html'
+
+

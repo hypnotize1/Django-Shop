@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.forms import UserChangeForm as BaseUserChangeForm
@@ -94,11 +94,6 @@ class ProfileForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'}),
         required=False
     )
-    current_picture = forms.ImageField(
-        required=False,
-        widget=forms.FileInput,
-        label='current picture',
-    )
     class Meta:
         model = Account
         fields = [
@@ -112,9 +107,17 @@ class ProfileForm(forms.ModelForm):
             super().__init__(*args, **kwargs)
             self.fields['email'].disabled = True
 
+
 class UserAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
+
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
