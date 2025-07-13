@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Update Bucket Object</h2>
+  <p>Object key: <strong>{{ key }}</strong></p>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file" required>
+    <button type="submit">Upload New File</button>
+  </form>
+{% endblock %}
