@@ -1,15 +1,26 @@
-# Ignore venv and Python cache
+# Virtual environment
 venv/
+env/
+
+# Python cache
 __pycache__/
 *.py[cod]
+*.so
 
-# Ignore DB and logs
+# Django SQLite DB and logs
 *.sqlite3
 *.log
 
-# Ignore Django static/media
+# VSCode and PyCharm settings (optional but common)
+.vscode/
+.idea/
+
+# Django static and media files
 media/
 staticfiles/
+media/aws/
 
-# Ignore env vars
+# Environment variables and secrets
 .env
+.env.*
+
