@@ -56,11 +56,12 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         user = self.request.user
-        messages.success(self.request, f'Welcome Back {user.name}!')
+        messages.success(self.request, f'Welcome Back {user.full_name}!')
         next_url = self.request.GET.get('next')
         if next_url:
             return next_url
         return reverse_lazy('accounts:profile')
+
 
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('accounts:login')
@@ -71,12 +72,15 @@ class UserPasswordResetView(PasswordResetView):
     success_url = reverse_lazy('accounts:password_reset_done')
     email_template_name = 'accounts/password_reset_email.html'
 
+
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'accounts/password_reset_done.html'
+
 
 class UserPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'accounts/password_reset_confirm.html'
     success_url = reverse_lazy('accounts:password_reset_complete')
+
 
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
