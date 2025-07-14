@@ -3,24 +3,43 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
 from django.conf import settings
-from django.views.generic import ListView, DetailView
+from django.views.generic import TemplateView, DetailView
+from .models import Category, Product, Brand
 from .tasks import bucket_objects_task, delete_object_task, download_object_task, update_object_task
 from utils import IsUserAdminMixin
 import os
 
 # Create your views here.
 
-class HomeView(ListView):
-    pass
-
-
+class HomeView(TemplateView):
+    template_name = 'store/home.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)    
+        context['products'] = Product.objects.filter(available=True)
+        context['categories'] = Category.objects.all()
+        context['brands'] = Brand.objects.all()
+        return context
+    
 
 class ProductDetailView(DetailView):
-    pass
+    model = Product
+    template_name = 'store/product_detail.html'     
+    context_object_name = 'product'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
+  
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        context['variants'] = product.variants.all()
+        context['images'] = product.images.all()
+        context['tags'] = product.tags.all()
+        context['reviews'] = product.reviews.filter(approved=True)
+        return context
 
-
-class BucketHome(View):
+class BucketHome(IsUserAdminMixin, View):
     def get(self, request, *args, **kwargs):
         task = bucket_objects_task.delay()
         return redirect('store:bucket-result', task_id=task.id)
