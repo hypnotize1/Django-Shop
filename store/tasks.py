@@ -26,7 +26,7 @@ def download_object_task(key):
     try:
         return bucket.download_bucket_object(key)
     except Exception as e:
-        logger.error(f'Error downloading object {key}: {e}')
+        logger.error(f'Error downloading object {key}: {e}', exc_info=True)
         return False
 
 

@@ -28,17 +28,18 @@ class Bucket:
         return True
     
     def download_bucket_object(self, key):
-        with open(settings.AWS_LOCAL_STORAGE + key, 'wb') as f:
+        local_path = os.path.join(settings.AWS_LOCAL_STORAGE, key)
+        os.makedirs(os.path.dirname(local_path), exist_ok=True) 
+        with open(local_path, 'wb') as f:
             self.connection.download_fileobj(self.bucket_name, key, f)
         return True
-    
+
     def update_bucket_object(self, key, local_path):
         with open(local_path, 'rb') as f:
             self.connection.upload_fileobj(f, self.bucket_name, key)
         os.remove(local_path)
         return True
 
-
-                        
+                     
 bucket = Bucket()
 
