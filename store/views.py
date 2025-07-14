@@ -74,8 +74,8 @@ class DownloadBucketObject(IsUserAdminMixin, View):
     
 class UpdateBucketObject(IsUserAdminMixin, View):
 
-    template_name = 'store/update_bucket_object.html'
-    def get(self, request, key):     
+    template_name = 'store/bucket_update.html'
+    def get(self, request, key):
         return render(request, self.template_name, {'key': key})
     
     def post(self, request, key):
