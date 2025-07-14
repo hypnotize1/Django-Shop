@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # local apps
+    'orders.apps.OrdersConfig',
     'store.apps.StoreConfig',
     'accounts.apps.AccountsConfig',
+    #third-party apps 
     'storages',
     'django_celery_beat',
 ]
@@ -155,8 +158,12 @@ AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_SERVICE_NAME = config('AWS_SERVICE_NAME', default='s3')
+
 AWS_S3_ENDPOINT_URL = "https://s3.ir-thr-at1.arvanstorage.com"
 AWS_LOCAL_STORAGE = f'{BASE_DIR}/media/aws/'
+AWS_S3_FILE_OVERWRITE = False
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
 
 STORAGES = {
     "default": {

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ product.name }}</h2>
+
+<div class="row">
+  <div class="col-md-6">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+    {% endif %}
+  </div>
+  <div class="col-md-6">
+    <p>{{ product.description }}</p>
+    <p><strong>Price:</strong> {{ product.price }} Toman</p>
+    <p><strong>Availability:</strong> {% if product.available %}Available{% else %}Out of stock{% endif %}</p>
+
+    {% if variants %}
+      <h5>Variants:</h5>
+      <ul>
+        {% for v in variants %}
+          <li>{{ v.name }} - {{ v.value }} ( +{{ v.price_modifier }} Toman )</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+
+<hr>
+
+<h4>Tags:</h4>
+{% for tag in tags %}
+  <span class="badge bg-secondary">{{ tag.name }}</span>
+{% endfor %}
+
+<hr>
+
+<h4>User Reviews:</h4>
+{% for r in reviews %}
+  <div class="border p-2 mb-2">
+    <strong>{{ r.user.full_name }}</strong> - {{ r.rating }} ⭐
+    <small class="text-muted d-block">{{ r.created_at|date:"Y/m/d" }}</small>
+  </div>
+{% empty %}
+  <p>No reviews yet.</p>
+{% endfor %}
+
+{% endblock %}
