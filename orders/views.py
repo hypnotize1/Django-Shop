@@ -12,8 +12,6 @@ class CartView(TemplateView):
         context = super().get_context_data(**kwargs)
         cart = Cart(self.request)
         context['cart'] = cart
-        total = sum(item['total_price'] for item in cart)
-        context['total'] = total
         return context
 
 class CartAddView(FormView):
@@ -28,4 +26,9 @@ class CartAddView(FormView):
         return redirect('orders:cart_detail')
 
     
-    
+class CartRemoveView(View):
+    def post(self, request , product_id):
+        cart = Cart(request)
+        product = get_object_or_404(Product, id = product_id)
+        cart.remove(product)
+        return redirect('orders:cart_detail')
