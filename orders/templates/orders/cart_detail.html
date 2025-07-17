@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="mb-4">Your Shopping Cart</h2>
+
+  {% if cart %}
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart %}
+            <tr>
+              <td>
+                <a href="{% url 'store:product_detail' item.product.slug %}">
+                  {{ item.product.name }}
+                </a>
+              </td>
+              <td>${{ item.price }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ item.total_price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  <h5>Total: ${{ total }}</h5>
+      <a href="{% url 'store:home' %}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+
+  {% else %}
+    <div class="alert alert-info" role="alert">
+      Your cart is empty.
+    </div>
+    <a href="{% url 'store:home' %}" class="btn btn-secondary">Back to Store</a>
+  {% endif %}
+</div>
+{% endblock %}
