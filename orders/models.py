@@ -16,7 +16,6 @@ class Order(models.Model):
         ],
         default='pending'
 )
-    total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     shipping_address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
@@ -24,6 +23,9 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.order_number}"
+    
+    def get_total_order_price(self):
+        return sum(item.get_total_item_price() for item in self.items.all())
 
  
 class OrderItem(models.Model):
@@ -36,4 +38,5 @@ class OrderItem(models.Model):
     def __str__(self):
         return f'{self.quantity} of {self.product.name} in Order #{self.order.order_number}'        
     
-    
+    def get_total_item_price(self):
+        return self.price * self.quantity 
