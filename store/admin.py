@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Category, Brand, Product, Tag,
     ProductImage, ProductVariant,
-    Wishlist, Review, Order, OrderItem, Address
+    Wishlist, Review,Address
 )
 
 
@@ -54,16 +54,6 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'rating', 'approved', 'created_at')
     list_filter = ('approved',)
 
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_number', 'user', 'total', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
-
-
-@admin.register(OrderItem)
-class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('order', 'product', 'variant', 'quantity', 'price')
 
 
 @admin.register(Address)
