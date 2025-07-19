@@ -3,6 +3,7 @@ from decimal import Decimal
 
 
 CART_SESSION_ID = 'cart'
+
 class Cart:
     def __init__(self, request):
         self.session = request.session
@@ -23,6 +24,7 @@ class Cart:
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity'] 
             yield item 
+            
              
     def add(self, product, quantity=1, override_quantity=False):
         product_id = str(product.id)
@@ -42,9 +44,12 @@ class Cart:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
+
+    def __len__(self):
+        return sum(item['quantity'] for item in self.cart.values())    
                   
     def save(self):
         self.session.modified = True
-        
+            
     def get_total_price(self):
         return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
