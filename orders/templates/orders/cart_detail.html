@@ -40,11 +40,14 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <h5>
-        Total: ${{ cart.get_total_price }}
-      </h5>
-      <a href="{% url 'store:home' %}" class="btn btn-primary">Continue Shopping</a>
-    </div>
+  <h5>
+    Total: ${{ cart.get_total_price }}
+  </h5>
+  <div>
+    <a href="{% url 'store:home' %}" class="btn btn-secondary me-2">ادامه خرید</a>
+    <a href="{% url 'orders:order_create' %}" class="btn btn-success">پرداخت</a>
+  </div>
+</div>
 
   {% else %}
     <div class="alert alert-info" role="alert">
