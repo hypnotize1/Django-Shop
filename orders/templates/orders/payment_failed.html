@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}پرداخت ناموفق{% endblock %}
+
+{% block content %}
+  <h2>پرداخت ناموفق بود</h2>
+  <p>متاسفانه پرداخت شما با موفقیت انجام نشد.</p>
+
+  {% if status %}
+    <p><strong>وضعیت:</strong> {{ status }}</p>
+  {% endif %}
+  
+  {% if authority %}
+    <p><strong>کد تراکنش (Authority):</strong> {{ authority }}</p>
+  {% endif %}
+  
+  {% if error_code %}
+    <p><strong>کد خطا:</strong> {{ error_code }}</p>
+  {% endif %}
+  
+  {% if error_message %}
+    <p><strong>پیغام خطا:</strong> {{ error_message }}</p>
+  {% endif %}
+  
+  <p>لطفا دوباره تلاش کنید یا در صورت نیاز با پشتیبانی تماس بگیرید.</p>
+  
+  <a href="{% url 'orders:pay_order' order.id %}"  class="btn btn-secondary">تلاش دوباره برای پرداخت</a>
+{% endblock %}
