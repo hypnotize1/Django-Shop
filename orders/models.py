@@ -26,7 +26,7 @@ class Order(models.Model):
         ('online_payment', 'Online Payment'),
         ('wallet_payment', 'Wallet Payment'),
     ])
-    payment_ref_id = models.CharField(max_length=100, blank=True, null=True)  # 👈 اضافه کن
+    payment_ref_id = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return f"Order #{self.order_number}"
