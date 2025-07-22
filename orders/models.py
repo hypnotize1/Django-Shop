@@ -42,8 +42,6 @@ class Order(models.Model):
 
     @staticmethod
     def generate_unique_order_number():
-        from random import randint
-        from django.utils.timezone import now
         return f"ORD{now().strftime('%Y%m%d')}{randint(1000,9999)}"
  
 class OrderItem(models.Model):
