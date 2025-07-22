@@ -31,3 +31,14 @@ class OrderCreationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['shipping_address'].queryset = Address.objects.filter(user=user)
+
+
+
+class CouponApplyForm(forms.Form):
+    code = forms.CharField(
+        label='Coupon Code',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter coupon code',
+        })
+    )

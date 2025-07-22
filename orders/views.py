@@ -1,20 +1,21 @@
+import requests
 from django.shortcuts import redirect, get_object_or_404, HttpResponse, render
 from django.urls import reverse
 from django.views import View
+from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView, TemplateView, DetailView, CreateView
 from django.conf import settings
-import json
-import requests
+from django.contrib import messages
 
-from .forms import CartAddProductForm, OrderCreationForm
+
+from .forms import CartAddProductForm, OrderCreationForm, CouponApplyForm
 from .cart import Cart
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Coupon
 from store.models import Product
 
 
 # Create your views here.
-
 
 class CartView(TemplateView):
     template_name = 'orders/cart_detail.html'
@@ -36,7 +37,7 @@ class CartAddView(FormView):
         cart.add(product, quantity=cd['quantity'], override_quantity=cd['override'])
         return redirect('orders:cart_detail')
 
-    
+
 class CartRemoveView(View):
     def post(self, request , product_id):
         cart = Cart(request)
@@ -45,7 +46,6 @@ class CartRemoveView(View):
         return redirect('orders:cart_detail')
     
     
-
 class OrderCreateView(CreateView):
     model = Order
     form_class = OrderCreationForm
@@ -76,21 +76,24 @@ class OrderCreateView(CreateView):
         cart.clear()
         return redirect('orders:order_detail', order_id=order.id)
     
-    
 
 class OrderDetailView(DetailView):
     model = Order
     template_name = 'orders/order_detail.html'
     context_object_name = 'order'
-    
+    form_class = CouponApplyForm
     
     def get_object(self):
         order_id = self.kwargs['order_id']
         user = self.request.user
         return get_object_or_404(Order, id=order_id, user=user)
     
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)   
+        context['form'] = self.form_class()
+        return context
 
+        
 class PayOrderView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         order =  get_object_or_404(Order, id=kwargs['order_id'])
@@ -119,7 +122,6 @@ class PayOrderView(LoginRequiredMixin, View):
             
         }
         
-        print("Amount sent:", int(order.get_total_order_price()))
         try:
             response = requests.post(settings.ZARINPAL_REQUEST_URL, json=data, headers=headers, timeout=10)
             response.raise_for_status()
@@ -137,6 +139,7 @@ class PayOrderView(LoginRequiredMixin, View):
         # errors
         error = response_data.get('errors', {})
         return HttpResponse(f"Error code: {error.get('code')}, Error message: {error.get('message')}")
+
 
 class PaymentVerifyView(LoginRequiredMixin, View):
     
@@ -203,3 +206,22 @@ class PaymentVerifyView(LoginRequiredMixin, View):
             "error_code": error_code,
             "error_message": error_message
         })
+
+
+class CouponApplyView(View):
+    def post(self, request, order_id):
+        form = CouponApplyForm(request.POST)
+        order = get_object_or_404(Order, id=order_id, user=request.user)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            now = timezone.now()
+            try:
+                coupon = Coupon.objects.get(code__iexact=code, valid_from__lte=now, valid_to__gte=now, active=True)
+                order.coupon = coupon
+                order.save()
+                messages.success(request, 'Coupon applied successfully.')
+            except Coupon.DoesNotExist:
+                messages.error(request, 'This coupon is not valid.')
+        else:
+            messages.error(request, 'Invalid form submission.')
+        return redirect('orders:order_detail', order_id=order.id)
