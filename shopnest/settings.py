@@ -186,3 +186,16 @@ ZARINPAL_MERCHANT_ID = '123e4567-e89b-12d3-a456-426614174000'
 ZARINPAL_REQUEST_URL = "https://sandbox.zarinpal.com/pg/v4/payment/request.json"
 ZARINPAL_VERIFY_URL = "https://sandbox.zarinpal.com/pg/v4/payment/verify.json"
 ZARINPAL_STARTPAY_URL = "https://sandbox.zarinpal.com/pg/StartPay/{authority}"
+
+
+# Redis cache settings
+
+CACHES = {
+    'default': {
+        'BACKEND':'django.core.backends.redis.RedisCache',
+        'LOCATION':'redis://127.0.0.1:6379'
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
