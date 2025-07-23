@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Coupon
 
 # Register your models here.
 
@@ -19,3 +19,5 @@ class OrderAdmin(admin.ModelAdmin):
     ordering = ('created_at',)
     inlines = (OrderItemInline,)
 
+
+admin.site.register(Coupon)
