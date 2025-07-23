@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <h2>Order Details #{{ order.order_number }}</h2>
+
+  <p><strong>Shipping Address:</strong> {{ order.shipping_address.get_full_address }}</p>
+  <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+  <p><strong>Status:</strong> {{ order.status }}</p>
+  <p><strong>Created at:</strong> {{ order.created_at }}</p>
+
+  <hr>
+
+  <h4>Products:</h4>
+  <ul>
+    {% for item in order.items.all %}
+      <li>{{ item.product.name }}
+        {% if item.variant %}
+          ({{ item.variant }})
+        {% endif %}
+        — {{ item.quantity }} pcs — {{ item.price }} Toman
+      </li>
+    {% endfor %}
+  </ul>
+
+  <hr>
+  <h5>Total: {{ order.get_total_order_price }} Toman</h5>
+  <hr>
+<h4>Have a coupon?</h4>
+<form method="post" action="{% url 'orders:coupon_apply' order.id %}">
+  {% csrf_token %}
+  {{ form.code.label_tag }} {{ form.code }}
+  <button type="submit" class="btn btn-outline-secondary">Apply</button>
+</form>
+
+  {% if not order.paid %}
+    <div class="mt-4">
+      <a href="{% url 'orders:pay_order' order.id %}" class="btn btn-primary">Pay Online</a>
+    </div>
+  {% else %}
+    <div class="mt-4">
+      <p class="text-success fw-bold">Payment completed successfully.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
